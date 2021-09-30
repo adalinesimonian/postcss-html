@@ -2,6 +2,7 @@
 
 const htmlparser = require("htmlparser2");
 const loadSyntax = require("postcss-syntax/load-syntax");
+const templateParse = require("./template-parse");
 
 function iterateCode (source, onStyleTag, onStyleAttribute) {
 	const openTag = {};
@@ -105,7 +106,9 @@ function htmlParser (source, opts, styles) {
 
 	function onStyleAttribute (style) {
 		if (/{[\s\S]*?}/g.test(style.content)) {
-			style.syntax = loadSyntax(opts, __dirname);
+			style.syntax = loadSyntax(opts, {
+				parse: templateParse,
+			});
 			style.lang = "custom-template";
 		} else {
 			// style.ignoreErrors = opts.from && /\.(?:jsp|aspx?|ejs|php\d*|twig)$/i.test(opts.from);
